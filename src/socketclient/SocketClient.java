@@ -44,32 +44,33 @@ class SocketClient extends JFrame implements ActionListener {
     	panel.setLayout(new GridBagLayout());
     	panel.setBackground(Color.white);
     	getContentPane().add(panel);
-    	GridBagConstraints ourGrid = new GridBagConstraints();
-    	//GridBagConstraints ourGrid = new GridBagConstraints(0,0,2,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(5,5,5,5),0,0);
+    	//GridBagConstraints ourGrid = new GridBagConstraints();
+    	GridBagConstraints ourGrid = new GridBagConstraints(0,0,2,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(5,5,5,5),0,0);
+    	JScrollPane chatScroller = new JScrollPane(chatDisplay);
+		chatScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		chatScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		
-    	ourGrid.gridx = 0;
+/*    	ourGrid.gridx = 0;
 		ourGrid.gridy = 0;
 		ourGrid.weightx = 1;
 		ourGrid.weighty = 1;
-		ourGrid.gridwidth = 3;
+		ourGrid.gridwidth = 1;
 		ourGrid.fill = GridBagConstraints.BOTH;
-		ourGrid.insets = new Insets(5, 5, 5, 5);
-    	panel.add(chatDisplay, ourGrid);
+		ourGrid.insets = new Insets(5, 5, 5, 5);*/
+    	panel.add(chatScroller, ourGrid);
 		
-		JScrollPane txtScroller = new JScrollPane(textArea);
-		txtScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		txtScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		
     	
 		ourGrid.gridwidth = 1;
 		ourGrid.gridy = 1; 
 		ourGrid.weighty = 0.25;
-    	panel.add(txtScroller, ourGrid);
+    	panel.add(textArea, ourGrid);
     	
     	ourGrid.gridx = 1;
     	ourGrid.weightx = 0.2;
         panel.add(button, ourGrid);
     	
-    	panel.setMinimumSize(new Dimension(600,480));
+    	//panel.setMinimumSize(new Dimension(600,480));
     	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
     	

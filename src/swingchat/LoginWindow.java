@@ -1,11 +1,9 @@
-package com.chat.view;
+package swingchat;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,8 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import socketclient.SocketClient;
 
 public class LoginWindow extends JFrame implements ActionListener {
     private JPanel panel;
@@ -85,22 +81,6 @@ public class LoginWindow extends JFrame implements ActionListener {
         c.weightx =  0.1 ;
         panel.add(textFieldIP,c);
 
-        /*c.gridx = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0 ;
-        c.gridy = 2 ;
-        c.gridwidth = 1 ;
-        c.weightx =  0 ;
-        c.ipadx = 0 ;
-        panel.add(labelName,c);
-
-        c.gridx = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1 ;
-        c.gridy = 2 ;
-        c.gridwidth = 4 ;
-        c.weightx = 0.1 ;
-
-        panel.add(textFieldName,c);*/
-
         c.gridx = GridBagConstraints.HORIZONTAL;
         c.gridx = 1 ;
         c.gridy = 3 ;
@@ -122,9 +102,6 @@ public class LoginWindow extends JFrame implements ActionListener {
         };
         
         this.addWindowListener(winListener);
-        	
-            /*client initial = new client(getUserName());
-            initial.go();*/
     }
     
     private Boolean IpValidation(String ipInput)
@@ -146,31 +123,24 @@ public class LoginWindow extends JFrame implements ActionListener {
     		IP = textFieldIP.getText();
     		dispose();
     		SocketClient frame = new SocketClient();
-        	frame.setTitle("Chat Window");
-        	frame.setVisible(true);
+    		frame.listenSocket(userName, IP);
+    		frame.setVisible(true);
+    		frame.setTitle("Chat Window");
+    		/*SocketClient frame = new SocketClient();
             WindowListener l = new WindowAdapter() {
                 public void windowClosing(WindowEvent e) {
                     System.exit(0);
                 }
             };
             frame.addWindowListener(l);
-            //frame.setMinimumSize(new Dimension(600,480));
-            frame.pack();
-            //frame.listenSocket(IP);
+            frame.setMinimumSize(new Dimension(600,480));
+            frame.pack();*/
     	}
 	}
-
-    public String getUserName(){
-        return this.userName ;
-    }
 
     public static void main (String[] args) throws Exception {
         LoginWindow frame = new LoginWindow();
         frame.setTitle("Login Window");
         
     }
-
-
-
-
 }

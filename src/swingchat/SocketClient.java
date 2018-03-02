@@ -2,43 +2,45 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package socketclient;
+package swingchat;
 
 /**
  *
  * @author Johnson Olayiwola
  */
-import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.BorderLayout;
 import java.awt.event.*;
 import javax.swing.*;
 
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SocketClient extends JFrame implements ActionListener {
     private JButton sendButton, attachButton;
-    private JPanel panel, panel1;
-    private JLabel label;
+    //private JLabel label;
     private JTextField inputText;
     private JTextArea chatArea;
     private Socket socket = null;
-    private PrintWriter out = null;
-    private BufferedReader in = null;
+    private ObjectOutputStream out = null;
+    private ObjectInputStream in = null;
+
+    private String userName;
+//    private String ipAddress;
 
     public SocketClient() {
     	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-    	this.setPreferredSize(new Dimension(640,480));
-    	//this.setLocationRelativeTo(null);
+    	this.setMinimumSize(new Dimension(640,480));
+    	//this.setVisible(true);
+    	//this.setTitle("Chat Window");
+
     	this.setLayout(new GridBagLayout());
     	GridBagConstraints gridLayout = new GridBagConstraints();
-
-    	label = new JLabel("Chat Application");
-        panel = new JPanel();
         
         chatArea = new JTextArea(12,40);
         inputText = new JTextField(25);
@@ -80,55 +82,62 @@ public class SocketClient extends JFrame implements ActionListener {
 		this.add(sendButton, gridLayout);
 		
         sendButton.addActionListener(this);
-    } //End Constructor
+    }
 
     public void actionPerformed(ActionEvent event) {
-        Object source = event.getSource();
+    	send(inputText.getText());
+        inputText.setText(new String(""));
+        /*Object source = event.getSource();
         if(source == sendButton) {
-        //Send data over socket
-            String text = inputText.getText();
-            out.println(text);
+        //Create the client message from input text
+            send(inputText.getText());
             inputText.setText(new String(""));
+        }*/
+    }
+
+    public void listenSocket(String userName, String ipAddress) {
+    	this.userName = userName;
+        //Create socket connection
+        try {
+            socket = new Socket(ipAddress, 4444);
+            in = new ObjectInputStream(socket.getInputStream());
+            out = new ObjectOutputStream(socket.getOutputStream());
             //Receive text from server
+            send("[ Joined ]");
+            new MessageListener();
+        } catch (Exception ex) {ex.printStackTrace();}
+    }
+    
+    // Build a string for the client message
+    public void say(Message message) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("(yyyy-MM-dd HH:mm)");
+        chatArea.append(dateFormat.format(message.time) + " " + message.author + " : " + message.text + "\n");
+    }
+    
+    public void send(String text) {
+        Message message = new Message(this.userName, new Date(), text);
+        try {
+            out.writeObject(message);
+        } catch (Exception ex) {
+        	ex.printStackTrace();
+        }
+    }
+    
+    public class MessageListener extends Thread {
+
+        public MessageListener() {
+            this.start();
+        }
+
+        @Override
+        public void run() {
             try {
-                String line = in.readLine();
-                System.out.println("Text received :" + line);
-            } catch (IOException e) {
-                System.out.println("Read failed");
-                System.exit(1);
+                while (true) {
+                    say((Message) in.readObject());
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
-
-/*    public void listenSocket(String serverAddress) {
-    	//serverAddress = getServerAddress();
-        //Create socket connection
-        try {
-            socket = new Socket(serverAddress, 4444);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (UnknownHostException e) {
-            System.out.println("Unknown host: kq6py.eng");
-            System.exit(1);
-        } catch  (IOException e) {
-            System.out.println("No I/O");
-            System.exit(1);
-        }
-    }*/
-
-/*    public static void main(String[] args) {
-    	SocketClient frame = new SocketClient();
-    	frame.setTitle("Client Program");
-        WindowListener l = new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                System.exit(0);
-            }
-        };
-
-        frame.addWindowListener(l);
-        //frame.setMinimumSize(new Dimension(600,480));
-        frame.pack();
-        frame.setVisible(true);
-        frame.listenSocket();
-    }*/
 }

@@ -2,12 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package socketclient;
 
 /**
  *
- * @author james.murphy
+ * @author Johnson Olayiwola
  */
 import java.awt.Color;
 import java.awt.Dimension;
@@ -21,83 +20,75 @@ import javax.swing.*;
 import java.io.*;
 import java.net.*;
 
-class SocketClient extends JFrame implements ActionListener {
-    private JLabel text, clicked;
-    private JButton button;
-    private JPanel panel;
-    private JTextField textArea;
-    private JTextArea chatDisplay;
+public class SocketClient extends JFrame implements ActionListener {
+    private JButton sendButton, attachButton;
+    private JPanel panel, panel1;
+    private JLabel label;
+    private JTextField inputText;
+    private JTextArea chatArea;
     private Socket socket = null;
     private PrintWriter out = null;
     private BufferedReader in = null;
 
-    public SocketClient() { //Begin Constructor
-    	chatDisplay = new JTextArea();
-    	chatDisplay.setEditable(false);
-    	chatDisplay.setLineWrap(true);
-    	textArea = new JTextField(20);
-        button = new JButton("Send");
-        text = new JLabel("Text to send over socket:");
-        button.addActionListener(this);
-    	
-    	panel = new JPanel();
-    	panel.setLayout(new GridBagLayout());
-    	panel.setBackground(Color.white);
-    	getContentPane().add(panel);
-    	//GridBagConstraints ourGrid = new GridBagConstraints();
-    	GridBagConstraints ourGrid = new GridBagConstraints(0,0,2,1,1,1,GridBagConstraints.CENTER,GridBagConstraints.BOTH,new Insets(5,5,5,5),0,0);
-    	JScrollPane chatScroller = new JScrollPane(chatDisplay);
-		chatScroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-		chatScroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		
-/*    	ourGrid.gridx = 0;
-		ourGrid.gridy = 0;
-		ourGrid.weightx = 1;
-		ourGrid.weighty = 1;
-		ourGrid.gridwidth = 1;
-		ourGrid.fill = GridBagConstraints.BOTH;
-		ourGrid.insets = new Insets(5, 5, 5, 5);*/
-    	panel.add(chatScroller, ourGrid);
-		
-		
-    	
-		ourGrid.gridwidth = 1;
-		ourGrid.gridy = 1; 
-		ourGrid.weighty = 0.25;
-    	panel.add(textArea, ourGrid);
-    	
-    	ourGrid.gridx = 1;
-    	ourGrid.weightx = 0.2;
-        panel.add(button, ourGrid);
-    	
-    	//panel.setMinimumSize(new Dimension(600,480));
+    public SocketClient() {
     	this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        
-    	
-        
-        
-        
-        
-        
-        
-        
+    	this.setPreferredSize(new Dimension(640,480));
+    	//this.setLocationRelativeTo(null);
+    	this.setLayout(new GridBagLayout());
+    	GridBagConstraints gridLayout = new GridBagConstraints();
 
+    	label = new JLabel("Chat Application");
+        panel = new JPanel();
+        
+        chatArea = new JTextArea(12,40);
+        inputText = new JTextField(25);
+        chatArea.setEditable(false);
+        chatArea.setLineWrap(true);
+        sendButton = new JButton("Send");
+        attachButton = new JButton( "Attach");
+        
+        JScrollPane scroll = new JScrollPane(chatArea);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        
+        gridLayout.gridx = 0;
+        gridLayout.gridy = 0;
+        gridLayout.weightx = 1;
+        gridLayout.weighty = 1;
+        gridLayout.gridwidth = 4;
+        gridLayout.fill = GridBagConstraints.BOTH;
+        gridLayout.insets = new Insets(5, 5, 5, 5);
+		this.add(scroll, gridLayout);
         
         
-        /*panel.add("North", text);
-        panel.add("Center", textArea);
-        panel.add("South", button);*/
-        
-        
+		gridLayout.gridx = 0;
+		gridLayout.gridy = 4;
+		gridLayout.weighty = 0;
+		gridLayout.gridwidth = 2;
+		this.add(inputText, gridLayout);
+		
+		gridLayout.gridx = 2;
+		gridLayout.gridy = 4;
+		gridLayout.weightx = 0;
+		gridLayout.gridwidth = 1;
+		this.add(attachButton, gridLayout);
+		
+		gridLayout.gridx = 3;
+		gridLayout.gridy = 4;
+		gridLayout.weightx = 0;
+		gridLayout.gridwidth = 1;
+		this.add(sendButton, gridLayout);
+		
+        sendButton.addActionListener(this);
     } //End Constructor
 
     public void actionPerformed(ActionEvent event) {
         Object source = event.getSource();
-        if(source == button) {
+        if(source == sendButton) {
         //Send data over socket
-            String text = textArea.getText();
+            String text = inputText.getText();
             out.println(text);
-            textArea.setText(new String(""));
+            inputText.setText(new String(""));
             //Receive text from server
             try {
                 String line = in.readLine();
@@ -109,10 +100,11 @@ class SocketClient extends JFrame implements ActionListener {
         }
     }
 
-    public void listenSocket() {
+/*    public void listenSocket(String serverAddress) {
+    	//serverAddress = getServerAddress();
         //Create socket connection
         try {
-            socket = new Socket("10.53.146.173", 4444);
+            socket = new Socket(serverAddress, 4444);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (UnknownHostException e) {
@@ -122,11 +114,11 @@ class SocketClient extends JFrame implements ActionListener {
             System.out.println("No I/O");
             System.exit(1);
         }
-    }
+    }*/
 
-    public static void main(String[] args) {
-        SocketClient frame = new SocketClient();
-	frame.setTitle("Client Program");
+/*    public static void main(String[] args) {
+    	SocketClient frame = new SocketClient();
+    	frame.setTitle("Client Program");
         WindowListener l = new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
@@ -134,9 +126,9 @@ class SocketClient extends JFrame implements ActionListener {
         };
 
         frame.addWindowListener(l);
-        frame.setMinimumSize(new Dimension(600,480));
+        //frame.setMinimumSize(new Dimension(600,480));
         frame.pack();
         frame.setVisible(true);
-	frame.listenSocket();
-    }
+        frame.listenSocket();
+    }*/
 }

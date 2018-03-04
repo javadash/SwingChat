@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package swingchat;
 
 /**
@@ -16,6 +13,7 @@ import java.awt.Insets;
 import java.awt.event.*;
 import javax.swing.*;
 
+
 import java.io.*;
 import java.net.*;
 import java.text.SimpleDateFormat;
@@ -23,7 +21,7 @@ import java.util.Date;
 
 public class SocketClient extends JFrame implements ActionListener {
     private JButton sendButton, attachButton;
-    //private JLabel label;
+    private JFileChooser fc;
     private JTextField inputText;
     private JTextArea chatArea;
     private Socket socket = null;
@@ -47,7 +45,7 @@ public class SocketClient extends JFrame implements ActionListener {
         chatArea.setEditable(false);
         chatArea.setLineWrap(true);
         sendButton = new JButton("Send");
-        attachButton = new JButton( "Attach");
+        attachButton = new JButton( "Attach", new ImageIcon(SocketClient.class.getResource("Open16.gif")));
         
         JScrollPane scroll = new JScrollPane(chatArea);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);

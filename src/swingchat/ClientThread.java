@@ -3,14 +3,12 @@ package swingchat;
 import java.io.*;
 import java.net.Socket;
 
-
 /**
- * Created by aldartron on 02.02.17.
+ * @author Johnson Olayiwola
  */
 public class ClientThread extends Thread {
 
     public Server server;
-
     private Socket socket;
 
     ObjectOutputStream serverOut;
@@ -27,8 +25,7 @@ public class ClientThread extends Thread {
 
             serverOut = new ObjectOutputStream(socket.getOutputStream());
             serverIn = new ObjectInputStream(socket.getInputStream());
-
-            // Принимаем сообщения
+ 
             while (true) {
                 server.broadcast((Message)serverIn.readObject());
             }
@@ -46,7 +43,7 @@ public class ClientThread extends Thread {
     }
 
     public void say(Message message) {
-        // Передача сообщения клиенту
+    	
         try {
             serverOut.writeObject(message);
         } catch (Exception ex) {ex.printStackTrace();}

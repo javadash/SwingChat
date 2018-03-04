@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * 
- * @author Johnson Olayiwola on 02/03/2018
+ * @author Johnson Olayiwola
  *
  */
 public class Message implements Serializable {

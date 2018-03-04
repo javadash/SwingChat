@@ -3,16 +3,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
 /**
- * Created by aldartron on 02.02.17.
+ * @author Johnson Olayiwola
  */
 public class Server {
 
     public ArrayList<ClientThread> clients = new ArrayList<>();
 
     public static void main(String[] args) {
-
         Server server = new Server();
         server.start();
     }
@@ -20,7 +18,6 @@ public class Server {
     private void start() {
         try {
             ServerSocket socketListener = new ServerSocket(4444);
-
             while (true) {
                 Socket client = null;
                 while (client == null) {
@@ -35,7 +32,6 @@ public class Server {
     }
 
     public void broadcast(Message message) {
-        // Рассылка сообщений
         for (ClientThread ct : clients) {
             ct.say(message);
         }

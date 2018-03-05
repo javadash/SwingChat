@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * @author Johnson Olayiwola
  */
 public class Server {
-
+	private static final int PORT = 4444;
     public ArrayList<ClientThread> clients = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -17,7 +17,8 @@ public class Server {
 
     private void start() {
         try {
-            ServerSocket socketListener = new ServerSocket(4444);
+            ServerSocket socketListener = new ServerSocket(PORT);
+            System.out.println("Server started on port " + PORT);
             while (true) {
                 Socket client = null;
                 while (client == null) {
@@ -33,7 +34,13 @@ public class Server {
 
     public void broadcast(Message message) {
         for (ClientThread ct : clients) {
-            ct.say(message);
+            ct.sendMessage(message);
+        }
+    }
+    
+    public void broadcast(String fileName) {
+        for (ClientThread ct : clients) {
+            ct.sendFile(fileName);
         }
     }
 }
